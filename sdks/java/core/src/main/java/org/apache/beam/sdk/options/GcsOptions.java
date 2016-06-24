@@ -89,9 +89,13 @@ public interface GcsOptions extends
    * {@link ExecutorService} is compatible with AppEngine.
    */
   public static class ExecutorServiceFactory implements DefaultValueFactory<ExecutorService> {
-    @SuppressWarnings("deprecation")  // IS_APP_ENGINE is deprecated for internal use only.
     @Override
     public ExecutorService create(PipelineOptions options) {
+      return create();
+    }
+
+    @SuppressWarnings("deprecation")  // IS_APP_ENGINE is deprecated for internal use only.
+    public ExecutorService create() {
       ThreadFactoryBuilder threadFactoryBuilder = new ThreadFactoryBuilder();
       threadFactoryBuilder.setThreadFactory(MoreExecutors.platformThreadFactory());
       if (!AppEngineEnvironment.IS_APP_ENGINE) {
@@ -106,10 +110,10 @@ public interface GcsOptions extends
        * can be active.
        */
       return new ThreadPoolExecutor(
-          0, Integer.MAX_VALUE, // Allow an unlimited number of re-usable threads.
-          Long.MAX_VALUE, TimeUnit.NANOSECONDS, // Keep non-core threads alive forever.
-          new SynchronousQueue<Runnable>(),
-          threadFactoryBuilder.build());
+              0, Integer.MAX_VALUE, // Allow an unlimited number of re-usable threads.
+              Long.MAX_VALUE, TimeUnit.NANOSECONDS, // Keep non-core threads alive forever.
+              new SynchronousQueue<Runnable>(),
+              threadFactoryBuilder.build());
     }
   }
 }
